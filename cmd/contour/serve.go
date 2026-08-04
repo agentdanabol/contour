@@ -239,7 +239,7 @@ func NewServer(log logrus.FieldLogger, ctx *serveContext) (*Server, error) {
 			// This is useful for saving memory by removing fields that are not needed by Contour.
 			ByObject: map[client.Object]ctrl_cache.ByObject{
 				&core_v1.Secret{}: {
-					Field: Field: fields.ParseSelectorOrDie(
+					Field: fields.ParseSelectorOrDie(
 						"type!=helm.sh/release.v1,type!=kubernetes.io/service-account-token"
 					),
 					Transform: func(obj any) (any, error) {
