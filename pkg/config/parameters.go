@@ -109,6 +109,30 @@ const (
 	PassThroughServerHeader    ServerHeaderTransformationType = "pass_through"
 )
 
+// PathWithEscapedSlashesActionType defines the action to take when a request path
+// contains escaped slash sequences (%2F, %2f, %5C and %5c).
+type PathWithEscapedSlashesActionType string
+
+func (a PathWithEscapedSlashesActionType) Validate() error {
+	switch a {
+	case KeepUnchangedPathWithEscapedSlashes,
+		RejectRequestPathWithEscapedSlashes,
+		UnescapeAndRedirectPathWithEscapedSlashes,
+		UnescapeAndForwardPathWithEscapedSlashes,
+		"":
+		return nil
+	default:
+		return fmt.Errorf("invalid path with escaped slashes action %q", a)
+	}
+}
+
+const (
+	KeepUnchangedPathWithEscapedSlashes       PathWithEscapedSlashesActionType = "keep_unchanged"
+	RejectRequestPathWithEscapedSlashes       PathWithEscapedSlashesActionType = "reject_request"
+	UnescapeAndRedirectPathWithEscapedSlashes PathWithEscapedSlashesActionType = "unescape_and_redirect"
+	UnescapeAndForwardPathWithEscapedSlashes  PathWithEscapedSlashesActionType = "unescape_and_forward"
+)
+
 // AccessLogType is the name of a supported access logging mechanism.
 type AccessLogType string
 
@@ -651,6 +675,18 @@ type Parameters struct {
 	// which strips duplicate slashes from request URL paths.
 	DisableMergeSlashes bool `yaml:"disableMergeSlashes,omitempty"`
 
+	// DisableNormalizePath disables Envoy's normalize_path option which normalizes
+	// request URL paths according to RFC 3986 before HTTP filters run and before
+	// route matching.
+	DisableNormalizePath bool `yaml:"disableNormalizePath,omitempty"`
+
+	// PathWithEscapedSlashesAction determines how Envoy handles request paths that
+	// contain escaped slash sequences (%2F, %2f, %5C and %5c). This action is applied
+	// before path normalization and merge slashes.
+	//
+	// Contour's default is keep_unchanged.
+	PathWithEscapedSlashesAction PathWithEscapedSlashesActionType `yaml:"pathWithEscapedSlashesAction,omitempty"`
+
 	// Defines the action to be applied to the Server header on the response path.
 	// When configured as overwrite, overwrites any Server header with "envoy".
 	// When configured as append_if_absent, if a Server header is present, pass it through, otherwise set it to "envoy".
@@ -1026,6 +1062,10 @@ func (p *Parameters) Validate() error {
 		return err
 	}
 
+	if err := p.PathWithEscapedSlashesAction.Validate(); err != nil {
+		return err
+	}
+
 	return p.Listener.Validate()
 }
 
@@ -1040,15 +1080,17 @@ func Defaults() Parameters {
 		Server: ServerParameters{
 			XDSServerType: EnvoyServerType,
 		},
-		IngressStatusAddress:       "",
-		AccessLogFormat:            DEFAULT_ACCESS_LOG_TYPE,
-		AccessLogFields:            DefaultFields,
-		AccessLogLevel:             LogLevelInfo,
-		TLS:                        TLSParameters{},
-		DisablePermitInsecure:      false,
-		DisableAllowChunkedLength:  false,
-		DisableMergeSlashes:        false,
-		ServerHeaderTransformation: OverwriteServerHeader,
+		IngressStatusAddress:         "",
+		AccessLogFormat:              DEFAULT_ACCESS_LOG_TYPE,
+		AccessLogFields:              DefaultFields,
+		AccessLogLevel:               LogLevelInfo,
+		TLS:                          TLSParameters{},
+		DisablePermitInsecure:        false,
+		DisableAllowChunkedLength:    false,
+		DisableMergeSlashes:          false,
+		DisableNormalizePath:         false,
+		PathWithEscapedSlashesAction: KeepUnchangedPathWithEscapedSlashes,
+		ServerHeaderTransformation:   OverwriteServerHeader,
 		Timeouts: TimeoutParameters{
 			// This is chosen as a rough default to stop idle connections wasting resources,
 			// without stopping slow connections from being terminated too quickly.

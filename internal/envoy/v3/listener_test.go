@@ -659,6 +659,8 @@ func TestHTTPConnectionManager(t *testing.T) {
 		connectionShutdownGracePeriod timeout.Setting
 		allowChunkedLength            bool
 		mergeSlashes                  bool
+		disableNormalizePath          bool
+		pathWithEscapedSlashesAction  contour_v1alpha1.PathWithEscapedSlashesActionType
 		serverHeaderTranformation     contour_v1alpha1.ServerHeaderTransformationType
 		forwardClientCertificate      *dag.ClientCertificateDetails
 		xffNumTrustedHops             uint32
@@ -702,12 +704,13 @@ func TestHTTPConnectionManager(t *testing.T) {
 							// a Host: header. See #537.
 							AcceptHttp_10: true,
 						},
-						CommonHttpProtocolOptions: &envoy_config_core_v3.HttpProtocolOptions{},
-						AccessLog:                 FileAccessLogEnvoy("/dev/stdout", "", nil, contour_v1alpha1.LogLevelInfo),
-						UseRemoteAddress:          wrapperspb.Bool(true),
-						NormalizePath:             wrapperspb.Bool(true),
-						PreserveExternalRequestId: true,
-						MergeSlashes:              false,
+						CommonHttpProtocolOptions:    &envoy_config_core_v3.HttpProtocolOptions{},
+						AccessLog:                    FileAccessLogEnvoy("/dev/stdout", "", nil, contour_v1alpha1.LogLevelInfo),
+						UseRemoteAddress:             wrapperspb.Bool(true),
+						NormalizePath:                wrapperspb.Bool(true),
+						PathWithEscapedSlashesAction: envoy_filter_network_http_connection_manager_v3.HttpConnectionManager_KEEP_UNCHANGED,
+						PreserveExternalRequestId:    true,
+						MergeSlashes:                 false,
 					}),
 				},
 			},
@@ -749,13 +752,14 @@ func TestHTTPConnectionManager(t *testing.T) {
 							// a Host: header. See #537.
 							AcceptHttp_10: true,
 						},
-						CommonHttpProtocolOptions: &envoy_config_core_v3.HttpProtocolOptions{},
-						AccessLog:                 FileAccessLogEnvoy("/dev/stdout", "", nil, contour_v1alpha1.LogLevelInfo),
-						UseRemoteAddress:          wrapperspb.Bool(true),
-						NormalizePath:             wrapperspb.Bool(true),
-						RequestTimeout:            durationpb.New(10 * time.Second),
-						PreserveExternalRequestId: true,
-						MergeSlashes:              false,
+						CommonHttpProtocolOptions:    &envoy_config_core_v3.HttpProtocolOptions{},
+						AccessLog:                    FileAccessLogEnvoy("/dev/stdout", "", nil, contour_v1alpha1.LogLevelInfo),
+						UseRemoteAddress:             wrapperspb.Bool(true),
+						NormalizePath:                wrapperspb.Bool(true),
+						PathWithEscapedSlashesAction: envoy_filter_network_http_connection_manager_v3.HttpConnectionManager_KEEP_UNCHANGED,
+						RequestTimeout:               durationpb.New(10 * time.Second),
+						PreserveExternalRequestId:    true,
+						MergeSlashes:                 false,
 					}),
 				},
 			},
@@ -800,11 +804,12 @@ func TestHTTPConnectionManager(t *testing.T) {
 						CommonHttpProtocolOptions: &envoy_config_core_v3.HttpProtocolOptions{
 							IdleTimeout: durationpb.New(90 * time.Second),
 						},
-						AccessLog:                 FileAccessLogEnvoy("/dev/stdout", "", nil, contour_v1alpha1.LogLevelInfo),
-						UseRemoteAddress:          wrapperspb.Bool(true),
-						NormalizePath:             wrapperspb.Bool(true),
-						PreserveExternalRequestId: true,
-						MergeSlashes:              false,
+						AccessLog:                    FileAccessLogEnvoy("/dev/stdout", "", nil, contour_v1alpha1.LogLevelInfo),
+						UseRemoteAddress:             wrapperspb.Bool(true),
+						NormalizePath:                wrapperspb.Bool(true),
+						PathWithEscapedSlashesAction: envoy_filter_network_http_connection_manager_v3.HttpConnectionManager_KEEP_UNCHANGED,
+						PreserveExternalRequestId:    true,
+						MergeSlashes:                 false,
 					}),
 				},
 			},
@@ -846,13 +851,14 @@ func TestHTTPConnectionManager(t *testing.T) {
 							// a Host: header. See #537.
 							AcceptHttp_10: true,
 						},
-						CommonHttpProtocolOptions: &envoy_config_core_v3.HttpProtocolOptions{},
-						AccessLog:                 FileAccessLogEnvoy("/dev/stdout", "", nil, contour_v1alpha1.LogLevelInfo),
-						UseRemoteAddress:          wrapperspb.Bool(true),
-						NormalizePath:             wrapperspb.Bool(true),
-						PreserveExternalRequestId: true,
-						MergeSlashes:              false,
-						StreamIdleTimeout:         durationpb.New(90 * time.Second),
+						CommonHttpProtocolOptions:    &envoy_config_core_v3.HttpProtocolOptions{},
+						AccessLog:                    FileAccessLogEnvoy("/dev/stdout", "", nil, contour_v1alpha1.LogLevelInfo),
+						UseRemoteAddress:             wrapperspb.Bool(true),
+						NormalizePath:                wrapperspb.Bool(true),
+						PathWithEscapedSlashesAction: envoy_filter_network_http_connection_manager_v3.HttpConnectionManager_KEEP_UNCHANGED,
+						PreserveExternalRequestId:    true,
+						MergeSlashes:                 false,
+						StreamIdleTimeout:            durationpb.New(90 * time.Second),
 					}),
 				},
 			},
@@ -897,11 +903,12 @@ func TestHTTPConnectionManager(t *testing.T) {
 						CommonHttpProtocolOptions: &envoy_config_core_v3.HttpProtocolOptions{
 							MaxConnectionDuration: durationpb.New(90 * time.Second),
 						},
-						AccessLog:                 FileAccessLogEnvoy("/dev/stdout", "", nil, contour_v1alpha1.LogLevelInfo),
-						UseRemoteAddress:          wrapperspb.Bool(true),
-						NormalizePath:             wrapperspb.Bool(true),
-						PreserveExternalRequestId: true,
-						MergeSlashes:              false,
+						AccessLog:                    FileAccessLogEnvoy("/dev/stdout", "", nil, contour_v1alpha1.LogLevelInfo),
+						UseRemoteAddress:             wrapperspb.Bool(true),
+						NormalizePath:                wrapperspb.Bool(true),
+						PathWithEscapedSlashesAction: envoy_filter_network_http_connection_manager_v3.HttpConnectionManager_KEEP_UNCHANGED,
+						PreserveExternalRequestId:    true,
+						MergeSlashes:                 false,
 					}),
 				},
 			},
@@ -943,12 +950,13 @@ func TestHTTPConnectionManager(t *testing.T) {
 							// a Host: header. See #537.
 							AcceptHttp_10: true,
 						},
-						CommonHttpProtocolOptions: &envoy_config_core_v3.HttpProtocolOptions{},
-						AccessLog:                 FileAccessLogEnvoy("/dev/stdout", "", nil, contour_v1alpha1.LogLevelInfo),
-						UseRemoteAddress:          wrapperspb.Bool(true),
-						NormalizePath:             wrapperspb.Bool(true),
-						PreserveExternalRequestId: true,
-						MergeSlashes:              false,
+						CommonHttpProtocolOptions:    &envoy_config_core_v3.HttpProtocolOptions{},
+						AccessLog:                    FileAccessLogEnvoy("/dev/stdout", "", nil, contour_v1alpha1.LogLevelInfo),
+						UseRemoteAddress:             wrapperspb.Bool(true),
+						NormalizePath:                wrapperspb.Bool(true),
+						PathWithEscapedSlashesAction: envoy_filter_network_http_connection_manager_v3.HttpConnectionManager_KEEP_UNCHANGED,
+						PreserveExternalRequestId:    true,
+						MergeSlashes:                 false,
 					}),
 				},
 			},
@@ -990,13 +998,14 @@ func TestHTTPConnectionManager(t *testing.T) {
 							// a Host: header. See #537.
 							AcceptHttp_10: true,
 						},
-						CommonHttpProtocolOptions: &envoy_config_core_v3.HttpProtocolOptions{},
-						AccessLog:                 FileAccessLogEnvoy("/dev/stdout", "", nil, contour_v1alpha1.LogLevelInfo),
-						UseRemoteAddress:          wrapperspb.Bool(true),
-						NormalizePath:             wrapperspb.Bool(true),
-						PreserveExternalRequestId: true,
-						MergeSlashes:              false,
-						DelayedCloseTimeout:       durationpb.New(90 * time.Second),
+						CommonHttpProtocolOptions:    &envoy_config_core_v3.HttpProtocolOptions{},
+						AccessLog:                    FileAccessLogEnvoy("/dev/stdout", "", nil, contour_v1alpha1.LogLevelInfo),
+						UseRemoteAddress:             wrapperspb.Bool(true),
+						NormalizePath:                wrapperspb.Bool(true),
+						PathWithEscapedSlashesAction: envoy_filter_network_http_connection_manager_v3.HttpConnectionManager_KEEP_UNCHANGED,
+						PreserveExternalRequestId:    true,
+						MergeSlashes:                 false,
+						DelayedCloseTimeout:          durationpb.New(90 * time.Second),
 					}),
 				},
 			},
@@ -1038,13 +1047,14 @@ func TestHTTPConnectionManager(t *testing.T) {
 							// a Host: header. See #537.
 							AcceptHttp_10: true,
 						},
-						CommonHttpProtocolOptions: &envoy_config_core_v3.HttpProtocolOptions{},
-						AccessLog:                 FileAccessLogEnvoy("/dev/stdout", "", nil, contour_v1alpha1.LogLevelInfo),
-						UseRemoteAddress:          wrapperspb.Bool(true),
-						NormalizePath:             wrapperspb.Bool(true),
-						PreserveExternalRequestId: true,
-						MergeSlashes:              false,
-						DrainTimeout:              durationpb.New(90 * time.Second),
+						CommonHttpProtocolOptions:    &envoy_config_core_v3.HttpProtocolOptions{},
+						AccessLog:                    FileAccessLogEnvoy("/dev/stdout", "", nil, contour_v1alpha1.LogLevelInfo),
+						UseRemoteAddress:             wrapperspb.Bool(true),
+						NormalizePath:                wrapperspb.Bool(true),
+						PathWithEscapedSlashesAction: envoy_filter_network_http_connection_manager_v3.HttpConnectionManager_KEEP_UNCHANGED,
+						PreserveExternalRequestId:    true,
+						MergeSlashes:                 false,
+						DrainTimeout:                 durationpb.New(90 * time.Second),
 					}),
 				},
 			},
@@ -1088,13 +1098,14 @@ func TestHTTPConnectionManager(t *testing.T) {
 							AcceptHttp_10:      true,
 							AllowChunkedLength: true,
 						},
-						CommonHttpProtocolOptions: &envoy_config_core_v3.HttpProtocolOptions{},
-						AccessLog:                 FileAccessLogEnvoy("/dev/stdout", "", nil, contour_v1alpha1.LogLevelInfo),
-						UseRemoteAddress:          wrapperspb.Bool(true),
-						NormalizePath:             wrapperspb.Bool(true),
-						PreserveExternalRequestId: true,
-						MergeSlashes:              false,
-						DrainTimeout:              durationpb.New(90 * time.Second),
+						CommonHttpProtocolOptions:    &envoy_config_core_v3.HttpProtocolOptions{},
+						AccessLog:                    FileAccessLogEnvoy("/dev/stdout", "", nil, contour_v1alpha1.LogLevelInfo),
+						UseRemoteAddress:             wrapperspb.Bool(true),
+						NormalizePath:                wrapperspb.Bool(true),
+						PathWithEscapedSlashesAction: envoy_filter_network_http_connection_manager_v3.HttpConnectionManager_KEEP_UNCHANGED,
+						PreserveExternalRequestId:    true,
+						MergeSlashes:                 false,
+						DrainTimeout:                 durationpb.New(90 * time.Second),
 					}),
 				},
 			},
@@ -1136,12 +1147,109 @@ func TestHTTPConnectionManager(t *testing.T) {
 							// a Host: header. See #537.
 							AcceptHttp_10: true,
 						},
-						CommonHttpProtocolOptions: &envoy_config_core_v3.HttpProtocolOptions{},
-						AccessLog:                 FileAccessLogEnvoy("/dev/stdout", "", nil, contour_v1alpha1.LogLevelInfo),
-						UseRemoteAddress:          wrapperspb.Bool(true),
-						NormalizePath:             wrapperspb.Bool(true),
-						PreserveExternalRequestId: true,
-						MergeSlashes:              true,
+						CommonHttpProtocolOptions:    &envoy_config_core_v3.HttpProtocolOptions{},
+						AccessLog:                    FileAccessLogEnvoy("/dev/stdout", "", nil, contour_v1alpha1.LogLevelInfo),
+						UseRemoteAddress:             wrapperspb.Bool(true),
+						NormalizePath:                wrapperspb.Bool(true),
+						PathWithEscapedSlashesAction: envoy_filter_network_http_connection_manager_v3.HttpConnectionManager_KEEP_UNCHANGED,
+						PreserveExternalRequestId:    true,
+						MergeSlashes:                 true,
+					}),
+				},
+			},
+		},
+		"disable normalize path": {
+			routename:            "default/kuard",
+			accesslogger:         FileAccessLogEnvoy("/dev/stdout", "", nil, contour_v1alpha1.LogLevelInfo),
+			disableNormalizePath: true,
+			want: &envoy_config_listener_v3.Filter{
+				Name: wellknown.HTTPConnectionManager,
+				ConfigType: &envoy_config_listener_v3.Filter_TypedConfig{
+					TypedConfig: protobuf.MustMarshalAny(&envoy_filter_network_http_connection_manager_v3.HttpConnectionManager{
+						StatPrefix: "default/kuard",
+						RouteSpecifier: &envoy_filter_network_http_connection_manager_v3.HttpConnectionManager_Rds{
+							Rds: &envoy_filter_network_http_connection_manager_v3.Rds{
+								RouteConfigName: "default/kuard",
+								ConfigSource: &envoy_config_core_v3.ConfigSource{
+									ResourceApiVersion: envoy_config_core_v3.ApiVersion_V3,
+									ConfigSourceSpecifier: &envoy_config_core_v3.ConfigSource_ApiConfigSource{
+										ApiConfigSource: &envoy_config_core_v3.ApiConfigSource{
+											ApiType:             envoy_config_core_v3.ApiConfigSource_GRPC,
+											TransportApiVersion: envoy_config_core_v3.ApiVersion_V3,
+											GrpcServices: []*envoy_config_core_v3.GrpcService{{
+												TargetSpecifier: &envoy_config_core_v3.GrpcService_EnvoyGrpc_{
+													EnvoyGrpc: &envoy_config_core_v3.GrpcService_EnvoyGrpc{
+														ClusterName: "contour",
+														Authority:   "contour",
+													},
+												},
+											}},
+										},
+									},
+								},
+							},
+						},
+						HttpFilters: defaultHTTPFilters,
+						HttpProtocolOptions: &envoy_config_core_v3.Http1ProtocolOptions{
+							// Enable support for HTTP/1.0 requests that carry
+							// a Host: header. See #537.
+							AcceptHttp_10: true,
+						},
+						CommonHttpProtocolOptions:    &envoy_config_core_v3.HttpProtocolOptions{},
+						AccessLog:                    FileAccessLogEnvoy("/dev/stdout", "", nil, contour_v1alpha1.LogLevelInfo),
+						UseRemoteAddress:             wrapperspb.Bool(true),
+						NormalizePath:                wrapperspb.Bool(false),
+						PathWithEscapedSlashesAction: envoy_filter_network_http_connection_manager_v3.HttpConnectionManager_KEEP_UNCHANGED,
+						PreserveExternalRequestId:    true,
+						MergeSlashes:                 false,
+					}),
+				},
+			},
+		},
+		"path with escaped slashes action set to reject request": {
+			routename:                    "default/kuard",
+			accesslogger:                 FileAccessLogEnvoy("/dev/stdout", "", nil, contour_v1alpha1.LogLevelInfo),
+			pathWithEscapedSlashesAction: contour_v1alpha1.RejectRequestPathWithEscapedSlashes,
+			want: &envoy_config_listener_v3.Filter{
+				Name: wellknown.HTTPConnectionManager,
+				ConfigType: &envoy_config_listener_v3.Filter_TypedConfig{
+					TypedConfig: protobuf.MustMarshalAny(&envoy_filter_network_http_connection_manager_v3.HttpConnectionManager{
+						StatPrefix: "default/kuard",
+						RouteSpecifier: &envoy_filter_network_http_connection_manager_v3.HttpConnectionManager_Rds{
+							Rds: &envoy_filter_network_http_connection_manager_v3.Rds{
+								RouteConfigName: "default/kuard",
+								ConfigSource: &envoy_config_core_v3.ConfigSource{
+									ResourceApiVersion: envoy_config_core_v3.ApiVersion_V3,
+									ConfigSourceSpecifier: &envoy_config_core_v3.ConfigSource_ApiConfigSource{
+										ApiConfigSource: &envoy_config_core_v3.ApiConfigSource{
+											ApiType:             envoy_config_core_v3.ApiConfigSource_GRPC,
+											TransportApiVersion: envoy_config_core_v3.ApiVersion_V3,
+											GrpcServices: []*envoy_config_core_v3.GrpcService{{
+												TargetSpecifier: &envoy_config_core_v3.GrpcService_EnvoyGrpc_{
+													EnvoyGrpc: &envoy_config_core_v3.GrpcService_EnvoyGrpc{
+														ClusterName: "contour",
+														Authority:   "contour",
+													},
+												},
+											}},
+										},
+									},
+								},
+							},
+						},
+						HttpFilters: defaultHTTPFilters,
+						HttpProtocolOptions: &envoy_config_core_v3.Http1ProtocolOptions{
+							// Enable support for HTTP/1.0 requests that carry
+							// a Host: header. See #537.
+							AcceptHttp_10: true,
+						},
+						CommonHttpProtocolOptions:    &envoy_config_core_v3.HttpProtocolOptions{},
+						AccessLog:                    FileAccessLogEnvoy("/dev/stdout", "", nil, contour_v1alpha1.LogLevelInfo),
+						UseRemoteAddress:             wrapperspb.Bool(true),
+						NormalizePath:                wrapperspb.Bool(true),
+						PathWithEscapedSlashesAction: envoy_filter_network_http_connection_manager_v3.HttpConnectionManager_REJECT_REQUEST,
+						PreserveExternalRequestId:    true,
+						MergeSlashes:                 false,
 					}),
 				},
 			},
@@ -1183,12 +1291,13 @@ func TestHTTPConnectionManager(t *testing.T) {
 							// a Host: header. See #537.
 							AcceptHttp_10: true,
 						},
-						CommonHttpProtocolOptions:  &envoy_config_core_v3.HttpProtocolOptions{},
-						AccessLog:                  FileAccessLogEnvoy("/dev/stdout", "", nil, contour_v1alpha1.LogLevelInfo),
-						UseRemoteAddress:           wrapperspb.Bool(true),
-						NormalizePath:              wrapperspb.Bool(true),
-						PreserveExternalRequestId:  true,
-						ServerHeaderTransformation: envoy_filter_network_http_connection_manager_v3.HttpConnectionManager_PASS_THROUGH,
+						CommonHttpProtocolOptions:    &envoy_config_core_v3.HttpProtocolOptions{},
+						AccessLog:                    FileAccessLogEnvoy("/dev/stdout", "", nil, contour_v1alpha1.LogLevelInfo),
+						UseRemoteAddress:             wrapperspb.Bool(true),
+						NormalizePath:                wrapperspb.Bool(true),
+						PathWithEscapedSlashesAction: envoy_filter_network_http_connection_manager_v3.HttpConnectionManager_KEEP_UNCHANGED,
+						PreserveExternalRequestId:    true,
+						ServerHeaderTransformation:   envoy_filter_network_http_connection_manager_v3.HttpConnectionManager_PASS_THROUGH,
 					}),
 				},
 			},
@@ -1244,12 +1353,13 @@ func TestHTTPConnectionManager(t *testing.T) {
 							// a Host: header. See #537.
 							AcceptHttp_10: true,
 						},
-						CommonHttpProtocolOptions: &envoy_config_core_v3.HttpProtocolOptions{},
-						AccessLog:                 FileAccessLogEnvoy("/dev/stdout", "", nil, contour_v1alpha1.LogLevelInfo),
-						UseRemoteAddress:          wrapperspb.Bool(true),
-						NormalizePath:             wrapperspb.Bool(true),
-						PreserveExternalRequestId: true,
-						MergeSlashes:              false,
+						CommonHttpProtocolOptions:    &envoy_config_core_v3.HttpProtocolOptions{},
+						AccessLog:                    FileAccessLogEnvoy("/dev/stdout", "", nil, contour_v1alpha1.LogLevelInfo),
+						UseRemoteAddress:             wrapperspb.Bool(true),
+						NormalizePath:                wrapperspb.Bool(true),
+						PathWithEscapedSlashesAction: envoy_filter_network_http_connection_manager_v3.HttpConnectionManager_KEEP_UNCHANGED,
+						PreserveExternalRequestId:    true,
+						MergeSlashes:                 false,
 					}),
 				},
 			},
@@ -1301,12 +1411,13 @@ func TestHTTPConnectionManager(t *testing.T) {
 							// a Host: header. See #537.
 							AcceptHttp_10: true,
 						},
-						CommonHttpProtocolOptions: &envoy_config_core_v3.HttpProtocolOptions{},
-						AccessLog:                 FileAccessLogEnvoy("/dev/stdout", "", nil, contour_v1alpha1.LogLevelInfo),
-						UseRemoteAddress:          wrapperspb.Bool(true),
-						NormalizePath:             wrapperspb.Bool(true),
-						PreserveExternalRequestId: true,
-						MergeSlashes:              false,
+						CommonHttpProtocolOptions:    &envoy_config_core_v3.HttpProtocolOptions{},
+						AccessLog:                    FileAccessLogEnvoy("/dev/stdout", "", nil, contour_v1alpha1.LogLevelInfo),
+						UseRemoteAddress:             wrapperspb.Bool(true),
+						NormalizePath:                wrapperspb.Bool(true),
+						PathWithEscapedSlashesAction: envoy_filter_network_http_connection_manager_v3.HttpConnectionManager_KEEP_UNCHANGED,
+						PreserveExternalRequestId:    true,
+						MergeSlashes:                 false,
 					}),
 				},
 			},
@@ -1348,13 +1459,14 @@ func TestHTTPConnectionManager(t *testing.T) {
 							// a Host: header. See #537.
 							AcceptHttp_10: true,
 						},
-						CommonHttpProtocolOptions: &envoy_config_core_v3.HttpProtocolOptions{},
-						AccessLog:                 FileAccessLogEnvoy("/dev/stdout", "", nil, contour_v1alpha1.LogLevelInfo),
-						UseRemoteAddress:          wrapperspb.Bool(true),
-						NormalizePath:             wrapperspb.Bool(true),
-						PreserveExternalRequestId: true,
-						MergeSlashes:              false,
-						XffNumTrustedHops:         uint32(1),
+						CommonHttpProtocolOptions:    &envoy_config_core_v3.HttpProtocolOptions{},
+						AccessLog:                    FileAccessLogEnvoy("/dev/stdout", "", nil, contour_v1alpha1.LogLevelInfo),
+						UseRemoteAddress:             wrapperspb.Bool(true),
+						NormalizePath:                wrapperspb.Bool(true),
+						PathWithEscapedSlashesAction: envoy_filter_network_http_connection_manager_v3.HttpConnectionManager_KEEP_UNCHANGED,
+						PreserveExternalRequestId:    true,
+						MergeSlashes:                 false,
+						XffNumTrustedHops:            uint32(1),
 					}),
 				},
 			},
@@ -1399,11 +1511,12 @@ func TestHTTPConnectionManager(t *testing.T) {
 						CommonHttpProtocolOptions: &envoy_config_core_v3.HttpProtocolOptions{
 							MaxRequestsPerConnection: wrapperspb.UInt32(1),
 						},
-						AccessLog:                 FileAccessLogEnvoy("/dev/stdout", "", nil, contour_v1alpha1.LogLevelInfo),
-						UseRemoteAddress:          wrapperspb.Bool(true),
-						NormalizePath:             wrapperspb.Bool(true),
-						PreserveExternalRequestId: true,
-						MergeSlashes:              false,
+						AccessLog:                    FileAccessLogEnvoy("/dev/stdout", "", nil, contour_v1alpha1.LogLevelInfo),
+						UseRemoteAddress:             wrapperspb.Bool(true),
+						NormalizePath:                wrapperspb.Bool(true),
+						PathWithEscapedSlashesAction: envoy_filter_network_http_connection_manager_v3.HttpConnectionManager_KEEP_UNCHANGED,
+						PreserveExternalRequestId:    true,
+						MergeSlashes:                 false,
 					}),
 				},
 			},
@@ -1449,11 +1562,12 @@ func TestHTTPConnectionManager(t *testing.T) {
 						Http2ProtocolOptions: &envoy_config_core_v3.Http2ProtocolOptions{
 							MaxConcurrentStreams: wrapperspb.UInt32(50),
 						},
-						AccessLog:                 FileAccessLogEnvoy("/dev/stdout", "", nil, contour_v1alpha1.LogLevelInfo),
-						UseRemoteAddress:          wrapperspb.Bool(true),
-						NormalizePath:             wrapperspb.Bool(true),
-						PreserveExternalRequestId: true,
-						MergeSlashes:              false,
+						AccessLog:                    FileAccessLogEnvoy("/dev/stdout", "", nil, contour_v1alpha1.LogLevelInfo),
+						UseRemoteAddress:             wrapperspb.Bool(true),
+						NormalizePath:                wrapperspb.Bool(true),
+						PathWithEscapedSlashesAction: envoy_filter_network_http_connection_manager_v3.HttpConnectionManager_KEEP_UNCHANGED,
+						PreserveExternalRequestId:    true,
+						MergeSlashes:                 false,
 					}),
 				},
 			},
@@ -1473,6 +1587,8 @@ func TestHTTPConnectionManager(t *testing.T) {
 				ConnectionShutdownGracePeriod(tc.connectionShutdownGracePeriod).
 				AllowChunkedLength(tc.allowChunkedLength).
 				MergeSlashes(tc.mergeSlashes).
+				DisableNormalizePath(tc.disableNormalizePath).
+				PathWithEscapedSlashesAction(tc.pathWithEscapedSlashesAction).
 				ServerHeaderTransformation(tc.serverHeaderTranformation).
 				NumTrustedHops(tc.xffNumTrustedHops).
 				ForwardClientCertificate(tc.forwardClientCertificate).
@@ -1484,6 +1600,49 @@ func TestHTTPConnectionManager(t *testing.T) {
 			protobuf.ExpectEqual(t, tc.want, got)
 		})
 	}
+}
+
+func TestHTTPConnectionManagerPathWithEscapedSlashesAction(t *testing.T) {
+	tests := map[string]struct {
+		action contour_v1alpha1.PathWithEscapedSlashesActionType
+		want   envoy_filter_network_http_connection_manager_v3.HttpConnectionManager_PathWithEscapedSlashesAction
+	}{
+		"keep unchanged": {
+			action: contour_v1alpha1.KeepUnchangedPathWithEscapedSlashes,
+			want:   envoy_filter_network_http_connection_manager_v3.HttpConnectionManager_KEEP_UNCHANGED,
+		},
+		"reject request": {
+			action: contour_v1alpha1.RejectRequestPathWithEscapedSlashes,
+			want:   envoy_filter_network_http_connection_manager_v3.HttpConnectionManager_REJECT_REQUEST,
+		},
+		"unescape and redirect": {
+			action: contour_v1alpha1.UnescapeAndRedirectPathWithEscapedSlashes,
+			want:   envoy_filter_network_http_connection_manager_v3.HttpConnectionManager_UNESCAPE_AND_REDIRECT,
+		},
+		"unescape and forward": {
+			action: contour_v1alpha1.UnescapeAndForwardPathWithEscapedSlashes,
+			want:   envoy_filter_network_http_connection_manager_v3.HttpConnectionManager_UNESCAPE_AND_FORWARD,
+		},
+		// An unset value must map to Contour's default rather than to the proto
+		// zero value IMPLEMENTATION_SPECIFIC_DEFAULT.
+		"empty value defaults to keep unchanged": {
+			action: "",
+			want:   envoy_filter_network_http_connection_manager_v3.HttpConnectionManager_KEEP_UNCHANGED,
+		},
+	}
+
+	for name, tc := range tests {
+		t.Run(name, func(t *testing.T) {
+			b := HTTPConnectionManagerBuilder().PathWithEscapedSlashesAction(tc.action)
+			assert.Equal(t, tc.want, b.pathWithEscapedSlashesAction)
+		})
+	}
+
+	t.Run("builder default is keep unchanged", func(t *testing.T) {
+		assert.Equal(t,
+			envoy_filter_network_http_connection_manager_v3.HttpConnectionManager_KEEP_UNCHANGED,
+			HTTPConnectionManagerBuilder().pathWithEscapedSlashesAction)
+	})
 }
 
 func TestTCPProxy(t *testing.T) {
